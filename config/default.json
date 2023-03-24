@@ -1,4 +1,9 @@
 {
-    "sonarqube_url": "http://localhost:9000",
-    "port": 3000
+    "port": 3000,
+    "sonarqube": {
+        "api_url": "http://localhost:9000",
+        "web_url": "http://122.9.45.246",
+        "username": "admin", 
+        "password": "admin123" 
+    }
 }

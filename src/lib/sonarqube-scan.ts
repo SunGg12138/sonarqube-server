@@ -1,7 +1,7 @@
 import * as config from 'config';
 
 const scanner = require('sonarqube-scanner').async;
-const serverUrl = config.get('sonarqube_url');
+const serverUrl = config.get('sonarqube.api_url');
 
 interface SonarqubeScanOptions {
     token: string;

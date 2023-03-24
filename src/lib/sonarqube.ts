@@ -1,12 +1,12 @@
 import axios from 'axios';
 import * as config from 'config';
 
-const sonarqube_url = config.get('sonarqube_url');
+const sonarqubeApiUrl = config.get('sonarqube.api_url');
 const request = axios.create({
-    baseURL: sonarqube_url,
+    baseURL: sonarqubeApiUrl,
     auth: {
-        username: 'admin', 
-        password: 'admin123' 
+        username: config.get('sonarqube.username'), 
+        password: config.get('sonarqube.password'), 
     },
 });
 request.interceptors.response.use((response) => {
@@ -15,6 +15,9 @@ request.interceptors.response.use((response) => {
     console.log('[SonarQube Error]', err?.response?.data || err);
 });
 
+/**
+ * 创建项目
+*/
 interface CreateProjectOptions {
     name: string;
     project: string;
@@ -29,13 +32,9 @@ export async function createProject (options: CreateProjectOptions) {
     });
 }
 
-export async function searchUserTokens() {
-    return request({
-        method: 'GET',
-        url: '/api/user_tokens/search',
-    });
-}
-
+/**
+ * 生成token
+*/
 interface GenerateUserTokenOptions {
     name: string;
     type: string;
@@ -52,6 +51,9 @@ export async function generateUserToken(
     }) as Promise<any>;
 }
 
+/**
+ * 创建项目后生成token
+*/
 interface GenerateProjectTokenOptions {
     projectKey: string;
 }
@@ -73,6 +75,9 @@ export async function generateProjectToken(
     return token;
 }
 
+/**
+ * 删除项目
+*/
 interface DeleteProjectOptions {
     projectKey: string;
 }

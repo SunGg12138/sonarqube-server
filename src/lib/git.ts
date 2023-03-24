@@ -11,7 +11,9 @@ interface CloneOptions {
     branchNames: string[];
 }
 export async function clone (
-    options: CloneOptions
+    options: CloneOptions,
+    // 尝试次数
+    times = 5
 ): Promise<{ name: string; path: string; }> {
     // 随机文件夹名称
     const name = `repo-${Date.now()}-${Math.random().toString().slice(-6)}`;
@@ -34,7 +36,16 @@ export async function clone (
             return result;
         }, []),
         'origin', options.url, 
-    ]).fetch([ 'origin' ]);
+    ]);
+
+    try {
+        await git.fetch([ 'origin' ]);
+    } catch (error) {
+        fs.remove(path);
+        console.log(`Git fetch origin Error [times=${times}]:`);
+        console.log(error);
+        return times <= 0? Promise.reject(error) : clone(options, --times);
+    }
 
     await checkout({
         dir: path,

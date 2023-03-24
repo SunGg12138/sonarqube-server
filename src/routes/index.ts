@@ -1,27 +1,63 @@
+import { Context } from 'koa';
 import * as Router from '@koa/router';
 import * as sonarqube from '../lib/sonarqube';
 import sonarqubeScan from '../lib/sonarqube-scan';
 import * as git from '../lib/git';
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import * as config from 'config';
 
+const sonarqubeWebUrl = config.get('sonarqube.web_url');
 const router = new Router({ prefix: '/api' });
+const localRepoPath = path.join(__dirname, '../../repositories');
 
 // 扫描
-router.get('/sonarqube/scan', async (ctx) => {
+router.get('/sonarqube/scan', async (ctx: Context) => {
+    const {
+        packageName, repoUrl, language, sources,
+    }= ctx.request.query;
+
+    console.log('请求参数: %o', ctx.request.query);
+
+    if (!packageName || !repoUrl || !language || !sources) {
+        ctx.status = 400;
+        ctx.body = { msg: '参数缺失' };
+        return;
+    }
+
+    await scanRemoteRepo(ctx);
+
+    // 本地仓库和远程仓库两种模式
+    // if (
+    //     branchName === 'develop' &&
+    //     await fs.pathExists(localRepoPath + '/' + packageName)
+    // ) {
+    //     await scanLocalRepo(ctx);
+    // } else {
+    //     await scanRemoteRepo(ctx);
+    // }
+});
+
+/**
+ * 扫描本地仓库
+*/
+async function scanLocalRepo (ctx: Context) {
     const {
         packageName, branchName = 'develop',
         language, sources,
         repoUrl,
     }= ctx.request.query;
+}
 
-    console.log('请求参数: %o', ctx.request.query);
-
-    if (!repoUrl || !language || !sources) {
-        ctx.status = 400;
-        ctx.body = { msg: '参数缺失' };
-        return;
-    }
+/**
+ * 扫描远程仓库
+*/
+async function scanRemoteRepo (ctx: Context) {
+    const {
+        packageName, branchName = 'develop',
+        language, sources,
+        repoUrl,
+    }= ctx.request.query;
 
     // 项目key
     const now = Date.now(), projectKey = `${packageName}-${now}`;
@@ -73,7 +109,8 @@ router.get('/sonarqube/scan', async (ctx) => {
         projectName,
         projectKey,
         token,
+        projectUrl: `${sonarqubeWebUrl}/dashboard?id=${projectKey}`,
     };
-});
+}
 
 export default router;
