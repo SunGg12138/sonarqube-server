@@ -72,3 +72,16 @@ export async function generateProjectToken(
     });
     return token;
 }
+
+interface DeleteProjectOptions {
+    projectKey: string;
+}
+export async function deleteProject(options: DeleteProjectOptions) {
+    return request({
+        method: 'POST',
+        url: '/api/projects/delete',
+        params: {
+            project: options.projectKey,
+        },
+    }) as Promise<any>;
+}

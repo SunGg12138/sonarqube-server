@@ -11,20 +11,20 @@ const router = new Router({ prefix: '/api' });
 router.get('/sonarqube/scan', async (ctx) => {
     const {
         packageName, branchName = 'develop',
-        username, commit, language, sources,
+        language, sources,
         repoUrl,
     }= ctx.request.query;
 
     console.log('请求参数: %o', ctx.request.query);
 
-    if (!repoUrl || !language || !sources || !branchName) {
+    if (!repoUrl || !language || !sources) {
         ctx.status = 400;
         ctx.body = { msg: '参数缺失' };
         return;
     }
 
     // 项目key
-    const projectKey = `${packageName}-${username}-${commit.slice(-7)}-${Date.now()}`;
+    const now = Date.now(), projectKey = `${packageName}-${now}`;
 
     const [
         token, { path: repoPath }
@@ -34,7 +34,7 @@ router.get('/sonarqube/scan', async (ctx) => {
         // clone项目到本地
         git.clone({
             url: repoUrl.toString(),
-            branchName: 'master',
+            branchNames: [ 'master', <string>branchName ],
         }),
     ]);
 
@@ -42,6 +42,7 @@ router.get('/sonarqube/scan', async (ctx) => {
     const scanOptions = {
         token,
         projectKey,
+        // projectKey当做临时名称
         projectName: projectKey,
         language: language.toString(),
         sources: path.join(repoPath, sources.toString()),
@@ -53,20 +54,25 @@ router.get('/sonarqube/scan', async (ctx) => {
         branchName: branchName.toString(),
         dir: repoPath,
     });
+
+    const { latest: { hash, author_name } } = await git.log({ 
+        dir: repoPath
+    });
+
+    // 项目名称
+    const projectName = `${packageName}-${author_name}-${hash.slice(-7)}-${now}`;
     // 扫码指定分支代码
-    await sonarqubeScan(scanOptions);
+    await sonarqubeScan({
+        ...scanOptions,
+        projectName,
+    });
     // 删除代码
     await fs.remove(repoPath);
 
     ctx.body = {
-        packageName,
-        projectName: projectKey,
+        projectName,
         projectKey,
         token,
-        branchName,
-        username,
-        commit,
-        language,
     };
 });
 
