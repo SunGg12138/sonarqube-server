@@ -39,7 +39,7 @@ export async function clone (
     ]);
 
     try {
-        await git.fetch([ 'origin' ]);
+        await git.fetch([ 'origin', '--depth', '1' ]);
     } catch (error) {
         fs.remove(path);
         console.log(`Git fetch origin Error [times=${times}]:`);
