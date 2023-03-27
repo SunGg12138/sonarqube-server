@@ -17,8 +17,6 @@ router.get('/sonarqube/scan', async (ctx: Context) => {
         packageName, repoUrl, language, sources,
     }= ctx.request.query;
 
-    console.log('请求参数: %o', ctx.request.query);
-
     if (!packageName || !repoUrl || !language || !sources) {
         ctx.status = 400;
         ctx.body = { msg: '参数缺失' };

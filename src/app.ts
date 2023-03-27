@@ -1,16 +1,16 @@
 import Koa from 'koa';
 import router from './routes';
+import catchErrorMiddleware from './middlewares/catchError';
+import visitMiddleware from './middlewares/visit';
 
 const app = new Koa();
 
+app.use(catchErrorMiddleware);
+app.use(visitMiddleware);
+
 app.use(async (ctx, next) => {
-    try {
-        await next();
-    } catch (err) {
-        ctx.status = 500;
-        ctx.body = { msg: '代码质量检测出错', error: err };
-        console.log(err);
-    }
+    console.log(`[${new Date()}] GET `);
+    await next();
 });
 
 app
