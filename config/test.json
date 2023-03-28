@@ -2,14 +2,13 @@
     "port": 3000,
     "sonarqube": {
         "api_url": "http://localhost:9000",
-        "web_url": "http://192.168.0.194",
+        "web_url": "http://localhost:9000",
         "username": "admin", 
         "password": "admin123" 
     },
     "redis": {
-        "port": 32634,
-        "host": "192.168.0.104",
-        "password": "ertDF323IOFs9"
+        "port": 6379,
+        "host": "127.0.0.1"
     },
     "redis_key": {
         "sonarqube_scan_list": "ihealth:sonarqube-scan:list",

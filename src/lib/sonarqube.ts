@@ -1,5 +1,10 @@
 import axios from 'axios';
 import * as config from 'config';
+import {
+    CreateProjectOptions, GenerateUserTokenOptions,
+    GenerateProjectTokenOptions, DeleteProjectOptions,
+    SearchMeasuresOptions,
+} from '../@types/sonarqube';
 
 const sonarqubeApiUrl = config.get('sonarqube.api_url');
 const request = axios.create({
@@ -18,12 +23,6 @@ request.interceptors.response.use((response) => {
 /**
  * 创建项目
 */
-interface CreateProjectOptions {
-    name: string;
-    project: string;
-    mainBranch: string;
-    visibility?: string;
-}
 export async function createProject (options: CreateProjectOptions) {
     return request({
         method: 'POST',
@@ -35,12 +34,6 @@ export async function createProject (options: CreateProjectOptions) {
 /**
  * 生成token
 */
-interface GenerateUserTokenOptions {
-    name: string;
-    type: string;
-    projectKey: string;
-    expirationDate?: string;
-}
 export async function generateUserToken(
     options: GenerateUserTokenOptions
 ) {
@@ -54,9 +47,6 @@ export async function generateUserToken(
 /**
  * 创建项目后生成token
 */
-interface GenerateProjectTokenOptions {
-    projectKey: string;
-}
 export async function generateProjectToken(
     options: GenerateProjectTokenOptions
 ): Promise<string> {
@@ -78,15 +68,26 @@ export async function generateProjectToken(
 /**
  * 删除项目
 */
-interface DeleteProjectOptions {
-    projectKey: string;
-}
 export async function deleteProject(options: DeleteProjectOptions) {
     return request({
         method: 'POST',
         url: '/api/projects/delete',
         params: {
             project: options.projectKey,
+        },
+    }) as Promise<any>;
+}
+
+/**
+ * 查询项目检测结果
+*/
+export async function searchMeasures(options: SearchMeasuresOptions) {
+    return request({
+        method: 'GET',
+        url: '/api/measures/search',
+        params: {
+            projectKeys: options.projectKeys.join(','),
+            metricKeys: options.metricKeys.join(','),
         },
     }) as Promise<any>;
 }

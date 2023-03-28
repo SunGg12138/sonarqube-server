@@ -6,10 +6,9 @@ describe('SonarQube Scan', function () {
         await supertest(app.callback())
             .get('/api/sonarqube/scan')
             .query({
-                packageName: 'test',
-                branchName: 'develop',
-                username: 'sun',
-                commit: 'sadsad1203akjdhsa81ej',
+                packageName: 'mochatest',
+                actor: 'mochatest',
+                commitSha: '1ab36e44dab9540d92da63dad69c60b55c42ef2c',
                 language: 'javascript',
                 sources: 'src',
                 repoUrl: 'https://github.com/SunGg12138/yunxin-im.git',
