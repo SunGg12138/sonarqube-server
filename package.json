@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prod": "pm2 start pm2.json",
+    "prod": "NODE_ENV=production pm2 start pm2.json",
     "start": "tsc && NODE_ENV=test node dist/server",
     "consumer": "NODE_ENV=test ts-node src/consumer.ts",
     "dev": "npm start",
