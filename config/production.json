@@ -1,0 +1,22 @@
+{
+    "port": 3000,
+    "sonarqube": {
+        "api_url": "http://localhost:9000",
+        "web_url": "http://192.168.0.194",
+        "username": "admin", 
+        "password": "admin123"
+    },
+    "redis": {
+        "port": 32634,
+        "host": "192.168.0.104",
+        "password": "ertDF323IOFs9"
+    },
+    "redis_key": {
+        "sonarqube_scan_list": "ihealth:sonarqube-scan:list",
+        "sonarqube_scan_start_commit": "ihealth:sonarqube-scan:start-commit"
+    },
+    "notification": {
+        "error_webhook_url": "https://open.feishu.cn/open-apis/bot/v2/hook/e9bd575b-c92b-4ee3-8a1d-ea7c5f9f748e",
+        "msg_webhook_url": "https://open.feishu.cn/open-apis/bot/v2/hook/45844eac-82b3-4132-b6c2-dad599059e75"
+    }
+}

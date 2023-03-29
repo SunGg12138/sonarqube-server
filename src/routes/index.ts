@@ -26,7 +26,7 @@ router.get('/sonarqube/scan', async (ctx: Context) => {
     }));
 
     ctx.body = {
-        msg: '代码分析完成后，发送飞书群通知'
+        msg: '发现代码问题后，发送飞书群通知，请关注群“共同照护-技术部”'
     };
 });
 

@@ -3,6 +3,7 @@
       {
         "name": "sonarqube-server",
         "script": "dist/server.js",
+        "log_date_format": "YYYY-MM-DD HH:mm:ss",
         "exec_interpreter": "node",
         "min_uptime": "60s",
         "max_restarts": 30,
