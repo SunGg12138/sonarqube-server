@@ -7,7 +7,7 @@
     "prod": "pm2 start pm2.json",
     "start": "tsc && NODE_ENV=test node dist/server",
     "consumer": "NODE_ENV=test ts-node src/consumer.ts",
-    "dev": "NODE_ENV=test npm start",
+    "dev": "npm start",
     "test": "NODE_ENV=test mocha -r ts-node/register --exit --timeout=100000 --file ./test/*.ts"
   },
   "keywords": [],

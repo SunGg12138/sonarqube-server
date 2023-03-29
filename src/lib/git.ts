@@ -96,7 +96,7 @@ export async function clone(
     try {
         await git.fetch([
             'origin',
-            // '--depth', '1'
+            '--depth', '100'
         ]);
     } catch (error) {
         console.log(`Git fetch origin Error [times=${times}]:`);
@@ -133,6 +133,7 @@ export async function reset(options: ResetOptions) {
             block: 5000,
         },
     });
+    console.log(`[Git Reset]: reset to ${options.commitSha}`);
     return git.reset([
         '--hard',
         options.commitSha,

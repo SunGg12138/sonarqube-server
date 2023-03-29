@@ -34,6 +34,9 @@ export async function ensureRepository(
             url: options.url,
             dir: localRepoPath,
             branchName: 'develop',
+        }).catch(async function (error) {
+            await fs.remove(localRepoPath);
+            return Promise.reject(error);
         });
     }
 
@@ -61,11 +64,22 @@ export async function handleSonarqubeScan(
         await notify.paramsError(
             errorWebhookUrl,
             {
-                text: `[SonarQube Error]项目未设置起始commit \npackageName=${packageName} \nrepoUrl=${repoUrl}`
+                text: `[SonarQube Error]项目未设置起始commit \npackageName=${packageName} \nrepoUrl=${repoUrl} \ncommit=${commitSha}`
             }
         );
         // 防止不断循环
         await utils.sleep(5000);
+        return;
+    }
+
+    // 对比的commit相同，不处理
+    if (commitSha === startCommitSha) {
+        await notify.paramsError(
+            errorWebhookUrl,
+            {
+                text: `[SonarQube Error]对比的commit相同 \npackageName=${packageName} \nrepoUrl=${repoUrl} \ncommit=${commitSha}`
+            }
+        );
         return;
     }
 

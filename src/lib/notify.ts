@@ -29,6 +29,9 @@ export async function codeQuality (success_webhook_url: string, fail_webhook_url
     });
     const alertStatus = measures.find(item => item.metric === 'alert_status');
 
+    console.log('[Code Quality] 项目代码质量结果:');
+    console.log(alertStatus);
+
     // 通知消息
     if (alertStatus.value === 'OK') {
         await codeQualitySuccess(success_webhook_url, options);
